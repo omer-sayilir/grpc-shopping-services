@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 /**
  * @author omersayilir
  * @Date 2024-09-06
@@ -17,8 +18,18 @@ public class UserServer {
 
     private Server server;
 
+    public static void main(String[] args) {
+        UserServer userServer = new UserServer();
+        userServer.startServer();
+        try {
+            userServer.blockUntilShutdown();
+        } catch (InterruptedException e) {
+            logger.log(Level.SEVERE, "Could not stop server", e);
+        }
+    }
+
     public void startServer() {
-        int port  = 50051;
+        int port = 50051;
         try {
             server = ServerBuilder.forPort(port)
                     .addService(new UserServiceImpl())
@@ -26,7 +37,7 @@ public class UserServer {
                     .start();
             logger.info("Server started, listening on " + port);
 
-            Runtime.getRuntime().addShutdownHook(new Thread()  {
+            Runtime.getRuntime().addShutdownHook(new Thread() {
                 @Override
                 public void run() {
                     logger.log(Level.INFO, "Clean server shutdown in case JVM was shutdown");
@@ -44,22 +55,12 @@ public class UserServer {
     }
 
     public void stopServer() throws InterruptedException {
-     if(server!=null)
-        server.shutdown().awaitTermination(30, TimeUnit.SECONDS);
+        if (server != null)
+            server.shutdown().awaitTermination(30, TimeUnit.SECONDS);
     }
 
     public void blockUntilShutdown() throws InterruptedException {
-        if(server!=null)
+        if (server != null)
             server.awaitTermination();
-    }
-
-    public static void main(String[] args) {
-        UserServer userServer = new UserServer();
-        userServer.startServer();
-        try {
-            userServer.blockUntilShutdown();
-        } catch (InterruptedException e) {
-            logger.log(Level.SEVERE, "Could not stop server", e);
-        }
     }
 }

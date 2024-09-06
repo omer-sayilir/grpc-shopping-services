@@ -11,9 +11,9 @@ import java.util.logging.Logger;
  * @Date 2024-09-06
  */
 public class UserDao {
-    private static final Logger logger= Logger.getLogger(UserDao.class.getName());
+    private static final Logger logger = Logger.getLogger(UserDao.class.getName());
 
-    public User getDetails(String username){
+    public User getDetails(String username) {
         User user = new User();
 
         try {
@@ -30,7 +30,7 @@ public class UserDao {
                 user.setGender(resultset.getString("gender"));
             }
 
-        } catch (Exception exception){
+        } catch (Exception exception) {
             logger.log(Level.SEVERE, "Could not set up connection", exception);
         }
         return user;

@@ -18,6 +18,7 @@ import java.util.logging.Logger;
  * */
 public class H2DatabaseConnection {
     private static final Logger logger = Logger.getLogger(H2DatabaseConnection.class.getName());
+    static Server server;
 
     static {
         try {
@@ -28,8 +29,6 @@ public class H2DatabaseConnection {
             logger.log(Level.SEVERE, "SQL error", exception);
         }
     }
-
-    static Server server;
 
     public static Connection getConnectionToDatabase() {
         Connection connection = null;
