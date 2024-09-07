@@ -22,7 +22,7 @@ public class OrderDao {
         try {
             connection = H2DatabaseConnection.getConnectionToDatabase();
             PreparedStatement preparedStatement = connection
-                    .prepareStatement("select * from order where user_id = ?");
+                    .prepareStatement("select * from orders where user_id = ?");
             preparedStatement.setInt(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -31,7 +31,7 @@ public class OrderDao {
                 order.setUserId(resultSet.getInt("user_id"));
                 order.setNoOfItems(resultSet.getInt("no_of_items"));
                 order.setTotalAmount(resultSet.getDouble("total_amount"));
-                order.setOrderDate(resultSet.getDate("order_at"));
+                order.setOrderDate(resultSet.getDate("order_date"));
                 orderList.add(order);
             }
 

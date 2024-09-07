@@ -2,6 +2,7 @@ package net.sayilir.shopping.server;
 
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import net.sayilir.shopping.service.OrderServiceImpl;
 import net.sayilir.shopping.service.UserServiceImpl;
 
 import java.io.IOException;
@@ -13,36 +14,36 @@ import java.util.logging.Logger;
  * @author omersayilir
  * @Date 2024-09-06
  */
-public class UserServer {
-    private static final Logger logger = Logger.getLogger(UserServer.class.getName());
+public class OrderServer {
+    private static final Logger logger = Logger.getLogger(OrderServer.class.getName());
 
     private Server server;
 
     public static void main(String[] args) {
-        UserServer userServer = new UserServer();
-        userServer.startServer();
+        OrderServer orderServer = new OrderServer();
+        orderServer.startServer();
         try {
-            userServer.blockUntilShutdown();
+            orderServer.blockUntilShutdown();
         } catch (InterruptedException e) {
             logger.log(Level.SEVERE, "Could not stop server", e);
         }
     }
 
     public void startServer() {
-        int port = 50051;
+        int port = 50052;
         try {
             server = ServerBuilder.forPort(port)
-                    .addService(new UserServiceImpl())
+                    .addService(new OrderServiceImpl())
                     .build()
                     .start();
-            logger.info("User Server started, listening on " + port);
+            logger.info("Order Server started, listening on " + port);
 
             Runtime.getRuntime().addShutdownHook(new Thread() {
                 @Override
                 public void run() {
                     logger.log(Level.INFO, "Clean server shutdown in case JVM was shutdown");
                     try {
-                        UserServer.this.stopServer();
+                        OrderServer.this.stopServer();
                     } catch (InterruptedException e) {
                         logger.log(Level.SEVERE, "Server shutdown interrupted", e);
                     }
