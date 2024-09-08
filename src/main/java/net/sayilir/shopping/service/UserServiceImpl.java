@@ -32,7 +32,9 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
         // get order by invoking the Order client
         ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50051)
                 .usePlaintext().build();
-        OrderClient orerderClient = new OrderClient(channel);
+        OrderClient orrderClient = new OrderClient(channel);
+
+        orrderClient.getOrders(user.getId());
 
 
         UserResponse userResponse = userResponseBuilder.build();
