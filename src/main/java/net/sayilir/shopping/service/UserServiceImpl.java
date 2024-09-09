@@ -10,12 +10,18 @@ import net.sayilir.stubs.user.Gender;
 import net.sayilir.stubs.user.UserRequest;
 import net.sayilir.stubs.user.UserResponse;
 import net.sayilir.stubs.user.UserServiceGrpc;
+import net.sayilir.stubs.order.Order;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author omersayilir
  * @Date 2024-09-06
  */
 public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
+    private Logger logger = Logger.getLogger(UserServiceImpl.class.getName());
     private final UserDao userDao = new UserDao();
 
     @Override
@@ -29,18 +35,27 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
                 .setAge(user.getAge())
                 .setGender(Gender.valueOf(user.getGender()));
 
-        // get order by invoking the Order client
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50051)
-                .usePlaintext().build();
-        OrderClient orrderClient = new OrderClient(channel);
-
-        orrderClient.getOrders(user.getId());
-
+        List <Order> orders = getOrders(userResponseBuilder);
 
         UserResponse userResponse = userResponseBuilder.build();
-
+        userResponseBuilder.setNoOfOrders(orders.size());
         responseObserver.onNext(userResponse);
         responseObserver.onCompleted();
 
+    }
+
+    private List<Order> getOrders(UserResponse.Builder userResponseBuilder) {
+        // get orders by invoking the Order client
+        ManagedChannel channel = ManagedChannelBuilder.forTarget("localhost:5002")
+                .usePlaintext().build();
+        OrderClient orderClient = new OrderClient(channel);
+        List<Order> orders= orderClient.getOrders(userResponseBuilder.getId());
+
+        try {
+            channel.shutdown().awaitTermination(30, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            logger.log(Level.SEVERE, "Could not stop server", e);
+        }
+        return orders;
     }
 }
