@@ -46,6 +46,7 @@ public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
 
     private List<Order> getOrders(UserResponse.Builder userResponseBuilder) {
         // get orders by invoking the Order client
+        logger.info("Creating channel to order server");
         ManagedChannel channel = ManagedChannelBuilder.forTarget("localhost:5002")
                 .usePlaintext().build();
         OrderClient orderClient = new OrderClient(channel);

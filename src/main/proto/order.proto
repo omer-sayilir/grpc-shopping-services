@@ -25,4 +25,5 @@ message Order{
   int32 no_of_items = 3;
   double total_amount = 4;
   google.protobuf.Timestamp order_date = 5;
+
 }
